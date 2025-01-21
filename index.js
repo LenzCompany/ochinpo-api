@@ -206,27 +206,7 @@ app.use((req, __, next) => {
 
 app.use('/file', express.static(tmpDir))
 
-app.all('/', (_, res) => {
-	const status = {}
-	status['diskUsage'] = cp.execSync('du -sh').toString().split('M')[0] + ' MB'
 
-	const used = process.memoryUsage()
-	for (let x in used) status[x] = utils.formatSize(used[x])
-
-	const totalmem = os.totalmem()
-	const freemem = os.freemem()
-	status['memoryUsage'] =
-		`${utils.formatSize(totalmem - freemem)} / ${utils.formatSize(totalmem)}`
-
-	const id = process.env.SPACE_ID
-	res.json({
-		message: id
-			? `Go to https://hf.co/spaces/${id}/discussions for discuss`
-			: 'Hello World!',
-		uptime: new Date(process.uptime() * 1000).toUTCString().split(' ')[4],
-		status
-	})
-})
 
 app.all(/^\/(brat|carbon)/, async (req, res) => {
 	if (!['GET', 'POST'].includes(req.method))
